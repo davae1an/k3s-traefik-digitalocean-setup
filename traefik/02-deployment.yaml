@@ -16,11 +16,11 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-      app: traefik
+      app: traefik-ingress
   template:
     metadata:
       labels:
-        app: traefik
+        app: traefik-ingress
     spec:
       serviceAccountName: traefik-ingress-controller
       containers:
@@ -38,6 +38,8 @@ spec:
             - --accesslog
             - --entrypoints.web.Address=:80
             - --entrypoints.websecure.Address=:443
+            - --entrypoints.traefik.address=:8080
+            - --api.dashboard=true
             - --providers.kubernetescrd
             - --providers.kubernetesingress
           ports:

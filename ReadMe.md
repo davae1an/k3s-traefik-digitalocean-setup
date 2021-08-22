@@ -2,6 +2,16 @@
 
 This is a guide on how to install K3s Kubernetes cluster with a vps provider. It includes how to properly install traefik as a gateway. The Traefik Kubernetes Ingress provider is a Kubernetes Ingress controller. it manages access to cluster services by supporting the Ingress specification. You use it to connect your pods to the internet.
 
+## Tools Used
+
+- kubectl - [Link](https://kubernetes.io/docs/tasks/tools/)
+
+- kubectx - A utility to manage and switch between kubectl(1) contexts.
+
+    [Windows](https://github.com/thomasliddledba/kubectxwin),  
+
+    [Mac or Linux](https://github.com/ahmetb/kubectx)
+
 ## 1. Register on digitalocean and setup vps
 
 Click on the button below for 60 day $100 free credit for new users. It is my affiliate link
@@ -50,4 +60,11 @@ K3sup Github [Link](https://github.com/alexellis/k3sup).
      kubectl apply -f traefik/  --namespace=traefik
     ```
 
-## 5. Test
+- check deployment
+  
+  ```bash
+    kubectl get pods --namespace=traefik
+    kubectl port-forward svc/traefik-ingress-service 8080
+  ```
+
+- what you should see when you type localhost:8080 in your browser
