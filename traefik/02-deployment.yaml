@@ -33,6 +33,24 @@ spec:
             limits:
               cpu: 900m
               memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: admin
+            failureThreshold: 1
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: admin
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 2
           args:
             - --api.insecure
             - --accesslog
@@ -41,7 +59,8 @@ spec:
             - --entrypoints.traefik.address=:8080
             - --api.dashboard=true
             - --providers.kubernetescrd
-            - --providers.kubernetesingress
+            - --providers.kubernetesingress=true
+            - --ping=true
           ports:
             - name: web
               containerPort: 80
