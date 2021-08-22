@@ -1,0 +1,16 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: traefik-ingress-service-lb
+spec:
+  selector:
+    app: traefik-ingress
+  ports:
+    - protocol: TCP
+      port: 80
+      name: web
+    - protocol: TCP
+      port: 443
+      name: secure
+  type: LoadBalancer
