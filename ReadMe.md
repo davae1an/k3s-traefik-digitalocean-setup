@@ -4,7 +4,7 @@ This is a guide on how to install K3s Kubernetes cluster with a vps provider. It
 
 ## 1. Register on digitalocean and setup vps
 
-Click on the button bellow for 60 day $100 free credit for new users. It is my affiliate link
+Click on the button below for 60 day $100 free credit for new users. It is my affiliate link
 
 [![DigitalOcean Referral Badge](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%201.svg)](https://www.digitalocean.com/?refcode=0a229afd221d&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
 
