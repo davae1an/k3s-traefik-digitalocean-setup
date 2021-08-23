@@ -39,41 +39,42 @@ K3sup Github [Link](https://github.com/alexellis/k3sup).
 - Create a new namespace for traefik
   
     ```bash
-     kubectl create namespace traefik
+    kubectl create namespace traefik
     ```
 
 - Install 01-crd.yaml, 02-deployment.yaml, 03-loadbalancer.yam from github source folder traefik
 
-     ```bash
-     cd traefik
+    ```bash
+    cd traefik
 
-     kubectl apply -f 01-crd.yaml  --namespace=traefik
+    kubectl apply -f 01-crd.yaml  --namespace=traefik
 
-     kubectl apply -f 02-deployment.yaml  --namespace=traefik
+    kubectl apply -f 02-deployment.yaml  --namespace=traefik
 
-     kubectl apply -f 03-loadbalancer.yaml  --namespace=traefik
+    kubectl apply -f 03-loadbalancer.yaml  --namespace=traefik
     ```
 
     or if your in the root folder
 
     ```bash
-     kubectl apply -f traefik/  --namespace=traefik
+    kubectl apply -f traefik/  --namespace=traefik
     ```
 
 - check deployment
   
   ```bash
-    kubectl get pods --namespace=traefik
-    kubectl port-forward svc/traefik-ingress-service 8080
+  kubectl get pods --namespace=traefik
+  kubectl port-forward svc/traefik-ingress-service 8080
   ```
 
 - what you should see when you type localhost:8080 in your browser
 
-![Semantic description of image](/screenshots/traefik-dashboard.PNG "Image Title")
+![Traefik Dashboard](/screenshots/traefik-dashboard.PNG "Traefik Dash")
 
-
-## 5. cert-manager 
+## 5. install cert-manager for (Certificate Management)
 
   ```bash
-    kubectl create namespace cert-manager
+  kubectl create namespace cert-manager
+
+  kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml --namespace=cert-manager
   ```
