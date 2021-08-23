@@ -1,0 +1,11 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: web-wildcard-certificate
+spec:
+  secretName: web-wild-tls
+  issuerRef:
+    name: letsencrypt-do-dns
+  dnsNames:
+    - domainhere.com
+    - '*.domainhere.com'
