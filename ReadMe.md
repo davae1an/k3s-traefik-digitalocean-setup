@@ -71,10 +71,61 @@ K3sup Github [Link](https://github.com/alexellis/k3sup).
 
 ![Traefik Dashboard](/screenshots/traefik-dashboard.PNG "Traefik Dash")
 
-## 5. install cert-manager for (Certificate Management)
+## 5. Install cert-manager for (Certificate Management)
 
   ```bash
   kubectl create namespace cert-manager
 
   kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml --namespace=cert-manager
   ```
+
+## 6. DNS Wildcard certificates (Lets Encrypt)
+
+In order to get wildcard certificates we have to use the kubernetes ingress to fulfil a challenge. In this setup we try to get a wildcard certificate via a DNS challenge. With a wildcard you can use one certificate for all your subdomains ex. domain.com, blog.domain.com, sale.domain.com will all have certificate. This is much better than doing a challenge for every subdomain.
+
+
+- Get DigitalOcean Access Token
+  
+  ![token1](/screenshots/access-token.png "token")
+
+  ![token1](/screenshots/access-token2.png "token2")
+
+- Convert token to base64 
+  
+  using git bash or linux mac
+
+  ```bash
+  echo  'tokenhere' | base64
+  ```
+
+  or use this website
+
+  https://www.base64encode.org/
+
+  paste token in box and pree encode button
+
+- Go in the do-dns-issure folder and paste the token in base64 format where '************YOUR DIGITALOCEAN ACCESS TOKEN HERE************'
+  
+  ```yaml
+    apiVersion: v1
+    kind: Secret
+    metadata:
+    name: digitalocean-dns
+    data:
+    access-token: '************YOUR DIGITALOCEAN ACCESS TOKEN HERE************'
+
+  ```
+
+- Apply Secret to name space
+
+    create a namespace for the secret where your going to host the webapp. Bellow I named it wordpress
+
+    ```bash
+    cd do-dns-issuer
+    
+    kubectl create namespace wordpress
+
+    kubectl apply -f 001-do-secret.yaml --namespace=wordpress
+
+    ```
+  
