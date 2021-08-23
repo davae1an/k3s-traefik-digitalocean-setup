@@ -68,3 +68,12 @@ K3sup Github [Link](https://github.com/alexellis/k3sup).
   ```
 
 - what you should see when you type localhost:8080 in your browser
+
+![Semantic description of image](/screenshots/traefik-dashboard.PNG "Image Title")
+
+
+## 5. cert-manager 
+
+  ```bash
+    kubectl create namespace cert-manager
+  ```
