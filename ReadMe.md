@@ -79,10 +79,18 @@ K3sup Github [Link](https://github.com/alexellis/k3sup).
   kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml --namespace=cert-manager
   ```
 
-## 6. DNS Wildcard certificates (Lets Encrypt)
+## 6. Add Domain to Digitalocean
 
-In order to get wildcard certificates we have to use the kubernetes ingress to fulfil a challenge. In this setup we try to get a wildcard certificate via a DNS challenge. With a wildcard you can use one certificate for all your subdomains ex. domain.com, blog.domain.com, sale.domain.com will all have certificate. This is much better than doing a challenge for every subdomain.
+Here is a comprehensive guide on how to setup the nameservers for your domain. It is need so you control it with digitalocean
 
+https://www.digitalocean.com/community/tutorials/how-to-point-to-digitalocean-nameservers-from-common-domain-registrars
+
+Follow these instructions after youve setup name server to add domain
+
+https://docs.digitalocean.com/products/networking/dns/how-to/add-domains/
+## 7. DNS Wildcard certificates (Lets Encrypt)
+
+In order to get wildcard certificates we have to use the kubernetes ingress to fulfil a challenge. In this setup we try to get a wildcard certificate via a DNS challenge. With a wildcard you can use one certificate for all your subdomains ex. domain.com, blog.domain.com, sale.domain.com will all use same certificate. This is much better than doing a challenge for every subdomain.
 
 - Get DigitalOcean Access Token
   
@@ -102,7 +110,7 @@ In order to get wildcard certificates we have to use the kubernetes ingress to f
 
   https://www.base64encode.org/
 
-  paste token in box and pree encode button
+  paste token in box and press encode button
 
 - Go in the do-dns-issure folder and paste the token in base64 format where '************YOUR DIGITALOCEAN ACCESS TOKEN HERE************'
   
@@ -116,9 +124,9 @@ In order to get wildcard certificates we have to use the kubernetes ingress to f
 
   ```
 
-- Apply Secret to name space
+- Apply Secret to namespace
 
-    create a namespace for the secret where your going to host the webapp. Bellow I named it wordpress
+    create a namespace for the secret where your going to host the webapp. Bellow I named it wordpress (From the root directory)
 
     ```bash
     cd do-dns-issuer
@@ -129,3 +137,58 @@ In order to get wildcard certificates we have to use the kubernetes ingress to f
 
     ```
   
+- Add your email to the Issuer
+
+  ```yaml
+   apiVersion: cert-manager.io/v1
+    kind: Issuer
+    metadata:
+    name: letsencrypt-do-dns
+    spec:
+    acme:
+        server: https://acme-v02.api.letsencrypt.org/directory
+        email: '************YOUR EMAIL HERE**************'
+        privateKeySecretRef:
+        name: letsencrypt-do-dns
+        solvers:
+        - dns01:
+            digitalocean:
+                tokenSecretRef:
+                name: digitalocean-dns
+                key: access-token
+
+  ```
+
+- Apply 002-dns-issuer to same namespace
+
+  ```bash
+  kubectl apply -f 002-dns-issuer.yaml --namespace=wordpress
+  ```
+
+- Modify 003-wildcard-cert.yaml by replacing both 'domainhere.com' and '*.domainhere.com'
+  
+  ```yaml
+    apiVersion: cert-manager.io/v1
+    kind: Certificate
+    metadata:
+    name: web-wildcard-certificate
+    spec:
+    secretName: web-wild-tls
+    issuerRef:
+        name: letsencrypt-do-dns
+    dnsNames:
+        - domainhere.com    <------------ HERE to yoursite.com
+        - '*.domainhere.com' <----------- AND HERE to '*.yousite.com'
+
+  ```
+
+- Test Certificate with a webapp
+
+Replace domain names 'DOMAINHERE.COM' with the domain you used for the lets encrypt challenge. Then.
+
+```bash
+    kubectl apply -f 004-testwhoami.yaml --namespace=wordpress
+```
+
+You should see a website that has a secure connection as bellow
+
