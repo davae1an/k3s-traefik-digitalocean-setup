@@ -1,0 +1,93 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: default
+  name: whoami
+  labels:
+    app: whoami
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: whoami
+  template:
+    metadata:
+      labels:
+        app: whoami
+    spec:
+      containers:
+        - name: whoami
+          image: traefik/whoami
+          resources:
+            requests:
+              cpu: 100m
+              memory: 20Mi
+            limits:
+              cpu: 100m
+              memory: 30Mi
+          ports:
+            - name: web
+              containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: whoami-service
+  labels:
+    app: whoami
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      name: http
+  selector:
+    app: whoami
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-https
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: whoami-http-to-https
+spec:
+  entryPoints:
+    - web # The entrypoint name for port 80 (no secure)
+  routes:
+    - match: Host(`********DOMAINHERE.COM********`)
+      kind: Rule
+      services:
+        - name: whoami-service
+          port: 80
+      middlewares:
+        - name: redirect-https
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: whoami-ingressroutetls
+spec:
+  entryPoints:
+    - secure
+  routes:
+    - match: Host(`********DOMAINHERE.COM********`)
+      kind: Rule
+      services:
+        - name: whoami-service
+          port: 80
+      middlewares:
+        - name: graphql-gateway-stripprefix
+  tls:
+    secretName: web-wild-tls

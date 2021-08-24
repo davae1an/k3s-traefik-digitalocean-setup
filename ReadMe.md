@@ -88,6 +88,8 @@ https://www.digitalocean.com/community/tutorials/how-to-point-to-digitalocean-na
 Follow these instructions after youve setup name server to add domain
 
 https://docs.digitalocean.com/products/networking/dns/how-to/add-domains/
+
+**NOTE!!** DNS server update may take up to 48 hours to take effect so give it some time. It can even happen a little faster. Just be paitent.
 ## 7. DNS Wildcard certificates (Lets Encrypt)
 
 In order to get wildcard certificates we have to use the kubernetes ingress to fulfil a challenge. In this setup we try to get a wildcard certificate via a DNS challenge. With a wildcard you can use one certificate for all your subdomains ex. domain.com, blog.domain.com, sale.domain.com will all use same certificate. This is much better than doing a challenge for every subdomain.
@@ -126,14 +128,14 @@ In order to get wildcard certificates we have to use the kubernetes ingress to f
 
 - Apply Secret to namespace
 
-    create a namespace for the secret where your going to host the webapp. Bellow I named it wordpress (From the root directory)
+    create a namespace for the secret where your going to host the webapp. Bellow I named it 'mesmore' (From the root directory)
 
     ```bash
     cd do-dns-issuer
     
-    kubectl create namespace wordpress
+    kubectl create namespace mesmore
 
-    kubectl apply -f 001-do-secret.yaml --namespace=wordpress
+    kubectl apply -f 001-do-secret.yaml --namespace=mesmore
 
     ```
   
@@ -162,7 +164,7 @@ In order to get wildcard certificates we have to use the kubernetes ingress to f
 - Apply 002-dns-issuer to same namespace
 
   ```bash
-  kubectl apply -f 002-dns-issuer.yaml --namespace=wordpress
+  kubectl apply -f 002-dns-issuer.yaml --namespace=mesmore
   ```
 
 - Modify 003-wildcard-cert.yaml by replacing both 'domainhere.com' and '*.domainhere.com'
@@ -187,7 +189,7 @@ In order to get wildcard certificates we have to use the kubernetes ingress to f
 Replace domain names 'DOMAINHERE.COM' with the domain you used for the lets encrypt challenge. Then.
 
 ```bash
-    kubectl apply -f 004-testwhoami.yaml --namespace=wordpress
+    kubectl apply -f 004-testwhoami.yaml --namespace=mesmore
 ```
 
 You should see a website that has a secure connection as bellow
