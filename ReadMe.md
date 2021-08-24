@@ -12,6 +12,22 @@ This is a guide on how to install K3s Kubernetes cluster with a vps provider. It
 
     [Mac or Linux](https://github.com/ahmetb/kubectx)
 
+## Helpful Commands
+
+  use these commands if you dont want to install kubectx
+
+  ```bash
+
+  # list namespaces
+  kubectl get namespaces
+
+  # change current namespace
+  kubectl config set-context --current --namespace=<insert-namespace-name-here>
+
+  # check current namespaces
+  kubectl config view --minify | grep namespace:
+  ```
+
 ## 1. Register on digitalocean and setup vps
 
 Click on the button below for 60 day $100 free credit for new users. It is my affiliate link
